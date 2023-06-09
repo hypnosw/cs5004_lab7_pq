@@ -6,7 +6,7 @@ package cs5004.collections;
  * return the value of the earliest added element.
  * The PQ should be immutable
  */
-public class ListPriorityQueue extends PriorityQueue{
+public class ListPriorityQueue implements PriorityQueue{
   // private Node node;
   private int count;
   private Node head;
@@ -24,6 +24,22 @@ public class ListPriorityQueue extends PriorityQueue{
       this.next = null;
       this.prev = null;
     }
+
+    /**
+     * Node's value getter method
+     * @return the Node's value
+     */
+    public String getValue() {
+      return this.value;
+    }
+
+    /**
+     * Node's priority getter method
+     * @return the node's priority
+     */
+    public Integer getPriority() {
+      return this.priority;
+    }
   }
 
   public ListPriorityQueue() {
@@ -31,6 +47,14 @@ public class ListPriorityQueue extends PriorityQueue{
     this.head = null;
     this.tail = null;
 
+  }
+
+  /**
+   * the queue's count getter method
+   * @return the queue's current node count
+   */
+  public int getCount() {
+    return this.count;
   }
 
   /**
@@ -62,6 +86,7 @@ public class ListPriorityQueue extends PriorityQueue{
    * @throws IllegalArgumentException Any values outside of this range
    * @return the PQ after operations
    */
+  @Override
   public PriorityQueue add(Integer priority, String value) throws IllegalArgumentException{
     if (1 > priority || priority > 10) {
       throw new IllegalArgumentException("Invalid priority value");
@@ -72,16 +97,26 @@ public class ListPriorityQueue extends PriorityQueue{
       this.tail = newNode;
       this.count ++;
     }
+
+    else if (priority > this.head.priority) {
+      Node newNode = new Node(priority, value);
+      this.head.prev = newNode;
+      newNode.next = this.head;
+      this.head = newNode;
+    }
     else {
       Node newNode = new Node(priority, value);
       Node temp = this.tail;
       for (int i = this.count; i > 0; i --) {
-        if (newNode.priority < temp.priority) {
-          temp.next.prev = newNode; // might get nullpointer if temp.next is null
-          newNode.next = temp.next;
+        if (newNode.priority <= temp.priority) {
+          if (temp.next != null) {
+            temp.next.prev = newNode;
+            newNode.next = temp.next;
+          }
           newNode.prev = temp;
           temp.next = newNode;
-          this.count ++;
+          this.count++;
+          break;
         }
         else {
           temp = temp.prev;
@@ -103,8 +138,12 @@ public class ListPriorityQueue extends PriorityQueue{
    * @throws EmptyPriorityQueueException calling peek() on an empty PQ
    * @return  the value in the PQ that has the highest priority
    */
+  @Override
   public String peek() throws EmptyPriorityQueueException{
-
+    if (this.isEmpty()) {
+      throw new EmptyPriorityQueueException();
+    }
+    return this.head.value;
   }
 
   /**
@@ -112,7 +151,22 @@ public class ListPriorityQueue extends PriorityQueue{
    * @return copy of the PQ without the element with the highest priority
    * @throws EmptyPriorityQueueException
    */
-  public PriorityQueue pop() throws EmptyPriorityQueueException{
+  @Override
+  public PriorityQueue pop() throws EmptyPriorityQueueException {
+    if (this.isEmpty()) {
+      throw new EmptyPriorityQueueException();
+    }
 
+    if (this.count == 1) {
+      return createEmpty();
+    } else {
+      ListPriorityQueue newQueue = new ListPriorityQueue();
+      newQueue.head = this.head.next;
+      newQueue.head.prev = null;
+      newQueue.tail = this.tail;
+      newQueue.count = this.count - 1;
+      return newQueue;
+    }
   }
+
 }
