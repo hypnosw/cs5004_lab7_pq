@@ -56,16 +56,6 @@ class ListPriorityQueueTest {
 
   @Test
   void testPop() throws EmptyPriorityQueueException {
-//    queue.add(5, "I am 5");
-//    queue.add(7, "I am 7");
-//    queue.add(10, "I am 10");
-//    Assertions.assertEquals("I am 10", queue.peek());
-//
-//    queue = queue.pop();
-//    Assertions.assertEquals("I am 7", queue.peek());
-//
-//    queue = queue.pop();
-//    Assertions.assertEquals("I am 5", queue.peek());
     queue = queue.add(5, "I am 5");
     queue = queue.add(7, "I am 7");
     queue = queue.add(10, "I am 10");

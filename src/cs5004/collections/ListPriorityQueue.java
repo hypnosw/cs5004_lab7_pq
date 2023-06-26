@@ -46,7 +46,6 @@ public class ListPriorityQueue implements PriorityQueue{
     this.count = 0;
     this.head = null;
     this.tail = null;
-
   }
 
   /**
@@ -103,6 +102,7 @@ public class ListPriorityQueue implements PriorityQueue{
       this.head.prev = newNode;
       newNode.next = this.head;
       this.head = newNode;
+      this.count ++;
     }
     else {
       Node newNode = new Node(priority, value);
@@ -157,16 +157,21 @@ public class ListPriorityQueue implements PriorityQueue{
       throw new EmptyPriorityQueueException();
     }
 
-    if (this.count == 1) {
-      return createEmpty();
-    } else {
-      ListPriorityQueue newQueue = new ListPriorityQueue();
+    ListPriorityQueue newQueue = new ListPriorityQueue();
+    if (this.count > 1) {
       newQueue.head = this.head.next;
       newQueue.head.prev = null;
       newQueue.tail = this.tail;
+      newQueue.tail.next = null;
       newQueue.count = this.count - 1;
-      return newQueue;
     }
+    else {
+      newQueue.count = 0;
+      newQueue.head = null;
+      newQueue.tail = null;
+    }
+    return (PriorityQueue) newQueue;
   }
+
 
 }
